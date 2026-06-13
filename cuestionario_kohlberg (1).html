@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Moral y Kohlberg | UNICAES</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+  :root {
+    --azul: #1B3A6B;
+    --azul-suave: #2E5FAC;
+    --crema: #F7F5F0;
+    --gris-texto: #2D2D2D;
+    --gris-borde: #D8D4CC;
+    --verde: #1A7A4A;
+    --rojo: #B83232;
+    --amarillo: #F5A623;
+    --blanco: #FFFFFF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--crema);
+    color: var(--gris-texto);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--azul);
+    color: var(--blanco);
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+    border-bottom: 4px solid var(--amarillo);
+  }
+
+  header .institución {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #A8BFE0;
+    margin-bottom: 0.5rem;
+  }
+
+  header h1 {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: clamp(1.3rem, 4vw, 1.9rem);
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 0.3rem;
+  }
+
+  header .subtitulo {
+    font-size: 0.85rem;
+    color: #A8BFE0;
+  }
+
+  .datos-estudiante {
+    background: var(--blanco);
+    border-bottom: 1px solid var(--gris-borde);
+    padding: 1.2rem 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem 1.5rem;
+  }
+
+  .dato-campo label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .dato-campo input {
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid var(--gris-borde);
+    padding: 0.3rem 0;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.95rem;
+    background: transparent;
+    color: var(--gris-texto);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .dato-campo input:focus {
+    border-bottom-color: var(--azul-suave);
+  }
+
+  main {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 2rem 1.2rem;
+  }
+
+  .parte-titulo {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--azul);
+    margin: 2.5rem 0 0.4rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--azul);
+  }
+
+  .instruccion {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+
+  /* ── VERDADERO Y FALSO ── */
+  .vf-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+  }
+
+  .vf-tabla thead th {
+    background: var(--azul);
+    color: var(--blanco);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+  }
+
+  .vf-tabla thead th:last-child,
+  .vf-tabla thead th:nth-last-child(2) {
+    text-align: center;
+    width: 60px;
+  }
+
+  .vf-tabla tbody tr {
+    border-bottom: 1px solid var(--gris-borde);
+    transition: background 0.15s;
+  }
+
+  .vf-tabla tbody tr:hover { background: #EEF2FA; }
+
+  .vf-tabla td {
+    padding: 0.75rem 0.8rem;
+    vertical-align: middle;
+  }
+
+  .num {
+    font-weight: 600;
+    color: var(--azul-suave);
+    font-size: 0.85rem;
+    width: 32px;
+    min-width: 32px;
+  }
+
+  .vf-tabla td.prop {
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .vf-opciones {
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .vf-opciones label {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    margin: 0 6px;
+    gap: 3px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #555;
+  }
+
+  .vf-opciones input[type="radio"] { display: none; }
+
+  .vf-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 2px solid var(--gris-borde);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #888;
+    transition: all 0.2s;
+    cursor: pointer;
+    background: var(--blanco);
+  }
+
+  .vf-opciones input[type="radio"]:checked + .vf-btn {
+    background: var(--azul);
+    border-color: var(--azul);
+    color: var(--blanco);
+  }
+
+  /* ── OPCIÓN MÚLTIPLE ── */
+  .pregunta-om {
+    background: var(--blanco);
+    border: 1px solid var(--gris-borde);
+    border-radius: 8px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .pregunta-om .enunciado {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--azul);
+    margin-bottom: 0.8rem;
+    line-height: 1.4;
+  }
+
+  .pregunta-om .enunciado .qnum {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 1rem;
+    color: var(--azul-suave);
+    margin-right: 0.3rem;
+  }
+
+  .opciones-om {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .opciones-om li label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    cursor: pointer;
+    padding: 0.5rem 0.7rem;
+    border-radius: 6px;
+    border: 1.5px solid transparent;
+    transition: background 0.15s, border-color 0.15s;
+    font-size: 0.88rem;
+    line-height: 1.4;
+  }
+
+  .opciones-om li label:hover { background: #EEF2FA; border-color: #C0CFEA; }
+
+  .opciones-om input[type="radio"] { display: none; }
+
+  .opciones-om input[type="radio"]:checked + label {
+    background: #DDE8F8;
+    border-color: var(--azul-suave);
+  }
+
+  .letra-opcion {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--gris-borde);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #888;
+    transition: all 0.2s;
+    margin-top: 1px;
+  }
+
+  .opciones-om input[type="radio"]:checked + label .letra-opcion {
+    background: var(--azul-suave);
+    border-color: var(--azul-suave);
+    color: var(--blanco);
+  }
+
+  /* ── BOTÓN Y RESULTADO ── */
+  .acciones {
+    margin-top: 2.5rem;
+    text-align: center;
+  }
+
+  .btn-evaluar {
+    background: var(--azul);
+    color: var(--blanco);
+    border: none;
+    padding: 0.9rem 2.5rem;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    letter-spacing: 0.03em;
+  }
+
+  .btn-evaluar:hover { background: var(--azul-suave); }
+
+  .resultado {
+    display: none;
+    margin-top: 2rem;
+    background: var(--blanco);
+    border: 2px solid var(--azul);
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .resultado h2 {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 1.2rem;
+    color: var(--azul);
+    margin-bottom: 0.5rem;
+  }
+
+  .nota-grande {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 3.5rem;
+    font-weight: 600;
+    line-height: 1;
+    margin: 0.5rem 0;
+  }
+
+  .nota-grande.aprobado { color: var(--verde); }
+  .nota-grande.reprobado { color: var(--rojo); }
+
+  .desglose {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 0.5rem;
+  }
+
+  /* Retroalimentación visual */
+  .correcto td { background: #E8F5EE !important; }
+  .incorrecto td { background: #FDE8E8 !important; }
+  .correcto .vf-btn-sel { background: var(--verde) !important; border-color: var(--verde) !important; color: white !important; }
+  .incorrecto .vf-btn-sel { background: var(--rojo) !important; border-color: var(--rojo) !important; color: white !important; }
+
+  .om-correcto label { background: #E8F5EE !important; border-color: var(--verde) !important; }
+  .om-incorrecto label { background: #FDE8E8 !important; border-color: var(--rojo) !important; }
+
+  .btn-reiniciar {
+    margin-top: 1rem;
+    background: transparent;
+    border: 2px solid var(--azul);
+    color: var(--azul);
+    padding: 0.6rem 1.5rem;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-reiniciar:hover { background: var(--azul); color: var(--blanco); }
+
+  footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.75rem;
+    color: #AAA;
+    border-top: 1px solid var(--gris-borde);
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 520px) {
+    .datos-estudiante { grid-template-columns: 1fr; }
+    .vf-tabla thead th:nth-last-child(2),
+    .vf-tabla thead th:last-child { width: 45px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="institución">UES — EN LÍNEA CC Y HH - INSTITUCIONES EDUCATIVAS - 01-2026</div>
+  <h1>Moral, Educación y Teoría de Kohlberg</h1>
+  <div class="subtitulo">Capítulos 3, 4 y artículo de Barra Almagiá (1987)</div>
+</header>
+
+<div class="datos-estudiante">
+  <div class="dato-campo">
+    <label>Nombre completo</label>
+    <input type="text" id="nombre" placeholder="Escriba su nombre aquí">
+  </div>
+  <div class="dato-campo">
+    <label>Carnet</label>
+    <input type="text" id="carnet" placeholder="—">
+  </div>
+  <div class="dato-campo">
+    <label>Fecha</label>
+    <input type="text" id="fecha" placeholder="—">
+  </div>
+</div>
+
+<main>
+
+  <!-- PARTE I -->
+  <div class="parte-titulo">Parte I — Verdadero y Falso</div>
+  <div class="instruccion">Marque V si la proposición es verdadera o F si es falsa.</div>
+
+  <table class="vf-tabla" id="tabla-vf">
+    <thead>
+      <tr>
+        <th style="width:32px">N°</th>
+        <th>Proposición</th>
+        <th>V</th>
+        <th>F</th>
+      </tr>
+    </thead>
+    <tbody id="cuerpo-vf"></tbody>
+  </table>
+
+  <!-- PARTE II -->
+  <div class="parte-titulo">Parte II — Opción Múltiple</div>
+  <div class="instruccion">Marque la letra que corresponde a la respuesta correcta.</div>
+
+  <div id="contenedor-om"></div>
+
+  <div class="acciones">
+    <button class="btn-evaluar" onclick="evaluar()">Revisar mis respuestas</button>
+  </div>
+
+  <div class="resultado" id="resultado">
+    <h2>Resultado</h2>
+    <div class="nota-grande" id="nota-display"></div>
+    <div class="desglose" id="desglose-display"></div>
+    <br>
+    <button class="btn-reiniciar" onclick="reiniciar()">Volver a intentar</button>
+  </div>
+
+</main>
+
+<footer>
+  Fuente: Perdomo Interiano, C. R. (2012). Fundamentos filosóficos de la educación. PEARSON. &nbsp;|&nbsp;
+  Barra Almagiá, E. (1987). Revista Latinoamericana de Psicología, 19(1), 7-18.
+</footer>
+
+<script>
+const preguntasVF = [
+  { prop: "La moral habitual basa sus normas en la conciencia y la razón, mientras que la moral reflexiva las basa en el hábito ancestral.", resp: "F" },
+  { prop: "Según Kohlberg, los seres humanos de todas las culturas pasan por los mismos niveles y estadios del desarrollo moral.", resp: "V" },
+  { prop: "En el nivel preconvencional, los juicios morales se elaboran a partir de consecuencias físicas como el castigo o el premio.", resp: "V" },
+  { prop: "El nivel transicional es el más avanzado del desarrollo moral y supone principios éticos universales.", resp: "F" },
+  { prop: "Según Harry Broudy, los criterios de educación y desarrollo moral son: autodeterminación, autorrealización y autointegración.", resp: "V" },
+  { prop: "La educación moral tiene como objetivo principal que el alumno se limite a cumplir reglas, es decir, que esté moralmente entrenado.", resp: "F" },
+  { prop: "En el nivel convencional, lo más importante es conformarse con las expectativas de la familia, el grupo o la nación.", resp: "V" },
+  { prop: "El adoctrinamiento es un proceso de concientización que fortalece la libertad del individuo.", resp: "F" },
+  { prop: "Según Paulo Freire, en la educación bancaria el educador y el educando construyen juntos el contenido programático.", resp: "F" },
+  { prop: "La desescolarización busca encontrar en el ambiente natural y social situaciones de aprendizaje que suelen pasar desapercibidas en la escuela formal.", resp: "V" },
+  { prop: "La teoría de Kohlberg se fundamenta psicológicamente en la teoría del desarrollo cognoscitivo de Jean Piaget.", resp: "V" },
+  { prop: "Según el artículo de Barra, el desarrollo cognitivo es una condición suficiente para garantizar el desarrollo moral del individuo.", resp: "F" },
+  { prop: "En el estadio de principios éticos universales, los principios morales se presentan como el referente moral último, por encima de las leyes humanas.", resp: "V" },
+  { prop: "El enfoque psicoanalítico del desarrollo moral se centra en la dimensión del conocimiento y enfatiza el desarrollo de reglas y principios universales.", resp: "F" },
+  { prop: "Según Bertrand Russell, la educación en la credulidad conduce a la decadencia mental y destruye el espíritu de libre investigación.", resp: "V" }
+];
+
+const preguntasOM = [
+  {
+    enunciado: "¿Cuál de los siguientes enfoques tradicionales de la moral sostiene que el ordenamiento ético de la sociedad se basa en la voluntad divina o en jerarquías preestablecidas por la razón?",
+    opciones: ["El enfoque relativista", "El enfoque objetivista-esencialista", "El enfoque evolutivo", "El enfoque cognitivista"],
+    resp: 1
+  },
+  {
+    enunciado: "En el estadio de moralidad heterónoma, el niño considera que:",
+    opciones: [
+      "Cada persona tiene sus propios intereses que pueden entrar en conflicto",
+      "Las cosas son buenas o malas en sí mismas, según conduzcan al castigo o al premio",
+      "Las normas deben basarse en principios éticos universales",
+      "Lo correcto es conformarse con las expectativas del grupo social"
+    ],
+    resp: 1
+  },
+  {
+    enunciado: "Según Kohlberg, ¿cuál es el nivel típico de muchos estudiantes universitarios de primer año que adoptan un relativismo moral marcado al salir de estructuras rígidas?",
+    opciones: ["Nivel preconvencional", "Nivel convencional", "Nivel transicional", "Nivel postconvencional"],
+    resp: 2
+  },
+  {
+    enunciado: "¿Qué significa la autodeterminación como criterio de educación moral según Broudy?",
+    opciones: [
+      "Que el sujeto se realiza a través de la creación de valores para otros",
+      "Que el sujeto acepta la responsabilidad de construir su futuro como legislador moral",
+      "Que el sujeto integra en un orden coherente las distintas demandas de valor",
+      "Que el sujeto obedece las normas establecidas por la autoridad institucional"
+    ],
+    resp: 1
+  },
+  {
+    enunciado: "Según Dewey, un principio moral es:",
+    opciones: [
+      "Una orden de actuar o abstenerse de actuar de una forma determinada",
+      "Un conjunto de reglas fijas que garantizan la convivencia social",
+      "Un instrumento para analizar una situación en toda su integridad",
+      "Una norma impuesta desde el exterior para regular la conducta"
+    ],
+    resp: 2
+  },
+  {
+    enunciado: "¿Cuál de las siguientes características pertenece al adoctrinador, según Fermoso?",
+    opciones: [
+      "Teme al cambio de ideas y carece de autocrítica",
+      "Se inclina por el autoritarismo y evita dar explicaciones",
+      "Usa fórmulas prefabricadas y confunde sumisión con adhesión",
+      "Encubre los hechos y practica la unilateralidad de la argumentación"
+    ],
+    resp: 1
+  },
+  {
+    enunciado: "La educación bancaria, concepto desarrollado por Paulo Freire, se caracteriza principalmente porque:",
+    opciones: [
+      "El educador y el educando construyen el conocimiento de manera dialógica",
+      "El educador es quien sabe, piensa y disciplina, mientras el educando escucha y obedece",
+      "El currículo se adapta a las necesidades e intereses de los estudiantes",
+      "Se promueve el pensamiento crítico y la conciencia reflexiva del educando"
+    ],
+    resp: 1
+  },
+  {
+    enunciado: "Según el artículo de Barra, ¿cuáles son los dos factores básicos que determinan el desarrollo moral en la teoría de Kohlberg?",
+    opciones: [
+      "La familia y la escuela",
+      "La religión y el Estado",
+      "El desarrollo cognoscitivo y la participación social con asunción de roles",
+      "El castigo y el refuerzo positivo"
+    ],
+    resp: 2
+  },
+  {
+    enunciado: "En el nivel postconvencional, estadio de principios éticos universales, la perspectiva social se define como:",
+    opciones: [
+      "Punto de vista egocéntrico que no considera los intereses de otros",
+      "Perspectiva del individuo en relación a lo que espera el grupo",
+      "Perspectiva de un individuo racional que reconoce que las personas son fines en sí mismas",
+      "Perspectiva del sistema social que define roles y reglas para todos"
+    ],
+    resp: 2
+  },
+  {
+    enunciado: "¿Cuál es la diferencia fundamental entre entrenamiento moral y educación moral?",
+    opciones: [
+      "El entrenamiento es más complejo porque exige reflexión filosófica",
+      "El entrenamiento procura que el alumno haga lo que debe; la educación busca que razone y acepte el deber moral",
+      "La educación moral es equivalente al adoctrinamiento bien organizado",
+      "No existe diferencia real; ambos persiguen el mismo resultado"
+    ],
+    resp: 1
+  },
+  {
+    enunciado: "Según la teoría cognitivo-evolutiva, los estadios morales de Kohlberg son integraciones jerárquicas, lo que significa que:",
+    opciones: [
+      "Los estadios superiores eliminan completamente los inferiores",
+      "Los estadios superiores reintegran los anteriores, sin reemplazarlos",
+      "Cada individuo puede saltarse estadios según su cultura",
+      "El nivel de inteligencia determina directamente el estadio moral alcanzado"
+    ],
+    resp: 1
+  },
+  {
+    enunciado: "Según Paul Nash, una religión estimula la autonomía moral cuando:",
+    opciones: [
+      "Exige obediencia indiscutida a la autoridad eclesiástica",
+      "Promueve el cumplimiento estricto de dogmas establecidos",
+      "Alienta la investigación individual, la búsqueda personal de la verdad y el examen de conciencia",
+      "Impone normas de conducta preestablecidas para todos los creyentes"
+    ],
+    resp: 2
+  },
+  {
+    enunciado: "La desescolarización, según Salazar Bondy, implica:",
+    opciones: [
+      "Eliminar toda forma de educación y dejar al individuo sin orientación",
+      "Aceptar todos los vehículos de cultura como posibilidades de formación y permitir que cada quien escoja su medio de aprendizaje",
+      "Reforzar el currículo formal con más horas de clase obligatoria",
+      "Sustituir al maestro por medios tecnológicos como la televisión"
+    ],
+    resp: 1
+  },
+  {
+    enunciado: "¿Qué tipo de manipulación educativa se da cuando se enseñan a cada miembro de la sociedad los patrones de comportamiento y pensamiento necesarios para su ajuste social?",
+    opciones: ["Manipulación informativa", "Personalización", "Moralización", "Socialización"],
+    resp: 3
+  },
+  {
+    enunciado: "Según el artículo de Barra, ¿en qué se diferencia el enfoque cognitivo-evolutivo de Kohlberg de los otros enfoques del desarrollo moral?",
+    opciones: [
+      "Plantea que la moralidad es resultado de procesos inconscientes del superyo",
+      "Sostiene que la moral se aprende exclusivamente por imitación y refuerzo en la primera infancia",
+      "Propone que existen principios morales universales producto de un juicio racional maduro, no aprendidos en la primera infancia",
+      "Afirma que la cultura determina de forma absoluta el estadio moral que puede alcanzar un individuo"
+    ],
+    resp: 2
+  }
+];
+
+// Render VF
+const letras = ['a','b','c','d'];
+const tbody = document.getElementById('cuerpo-vf');
+preguntasVF.forEach((p, i) => {
+  const tr = document.createElement('tr');
+  tr.id = `vf-${i}`;
+  tr.innerHTML = `
+    <td class="num">${i+1}</td>
+    <td class="prop">${p.prop}</td>
+    <td class="vf-opciones">
+      <label>
+        <input type="radio" name="vf${i}" value="V">
+        <span class="vf-btn">V</span>
+      </label>
+    </td>
+    <td class="vf-opciones">
+      <label>
+        <input type="radio" name="vf${i}" value="F">
+        <span class="vf-btn">F</span>
+      </label>
+    </td>
+  `;
+  tbody.appendChild(tr);
+});
+
+// Render OM
+const contenedorOM = document.getElementById('contenedor-om');
+preguntasOM.forEach((p, i) => {
+  const div = document.createElement('div');
+  div.className = 'pregunta-om';
+  div.id = `om-${i}`;
+  const opcionesHTML = p.opciones.map((op, j) => `
+    <li>
+      <input type="radio" name="om${i}" value="${j}" id="om${i}-${j}">
+      <label for="om${i}-${j}">
+        <span class="letra-opcion">${letras[j]}</span>
+        ${op}
+      </label>
+    </li>
+  `).join('');
+  div.innerHTML = `
+    <div class="enunciado"><span class="qnum">${i+16}.</span> ${p.enunciado}</div>
+    <ul class="opciones-om">${opcionesHTML}</ul>
+  `;
+  contenedorOM.appendChild(div);
+});
+
+function evaluar() {
+  let correctasVF = 0, correctasOM = 0;
+  let sinResponder = [];
+
+  // Evaluar VF
+  preguntasVF.forEach((p, i) => {
+    const sel = document.querySelector(`input[name="vf${i}"]:checked`);
+    const tr = document.getElementById(`vf-${i}`);
+    tr.classList.remove('correcto', 'incorrecto');
+    if (!sel) { sinResponder.push(i+1); return; }
+    const btns = tr.querySelectorAll('.vf-btn');
+    btns.forEach(b => b.classList.remove('vf-btn-sel'));
+    sel.nextElementSibling.classList.add('vf-btn-sel');
+    if (sel.value === p.resp) {
+      tr.classList.add('correcto'); correctasVF++;
+    } else {
+      tr.classList.add('incorrecto');
+    }
+  });
+
+  // Evaluar OM
+  preguntasOM.forEach((p, i) => {
+    const sel = document.querySelector(`input[name="om${i}"]:checked`);
+    const div = document.getElementById(`om-${i}`);
+    div.classList.remove('om-correcto', 'om-incorrecto');
+    if (!sel) { sinResponder.push(i+16); return; }
+    if (parseInt(sel.value) === p.resp) {
+      div.classList.add('om-correcto'); correctasOM++;
+    } else {
+      div.classList.add('om-incorrecto');
+    }
+  });
+
+  if (sinResponder.length > 0) {
+    alert(`Faltan respuestas en las preguntas: ${sinResponder.join(', ')}`);
+    return;
+  }
+
+  const total = correctasVF + correctasOM;
+  const nota = ((total / 30) * 10).toFixed(2);
+  const aprobado = parseFloat(nota) >= 6.0;
+
+  const resDiv = document.getElementById('resultado');
+  const notaEl = document.getElementById('nota-display');
+  const desgloseEl = document.getElementById('desglose-display');
+
+  notaEl.textContent = nota + ' / 10';
+  notaEl.className = 'nota-grande ' + (aprobado ? 'aprobado' : 'reprobado');
+  desgloseEl.innerHTML = `
+    <strong>${total}</strong> de 30 correctas &nbsp;·&nbsp;
+    V/F: ${correctasVF}/15 &nbsp;·&nbsp;
+    Opción múltiple: ${correctasOM}/15<br>
+    ${aprobado ? '✔ Aprobado' : '✘ No aprobado'}
+  `;
+
+  resDiv.style.display = 'block';
+  resDiv.scrollIntoView({ behavior: 'smooth' });
+}
+
+function reiniciar() {
+  document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+  document.querySelectorAll('.vf-btn').forEach(b => b.classList.remove('vf-btn-sel'));
+  document.querySelectorAll('tr').forEach(tr => tr.classList.remove('correcto','incorrecto'));
+  document.querySelectorAll('.pregunta-om').forEach(d => d.classList.remove('om-correcto','om-incorrecto'));
+  document.getElementById('resultado').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
